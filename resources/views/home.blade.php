@@ -45,7 +45,7 @@
                 <td style="width: 40%">{{ $statistics[0]->totalTaskCount  }}</td>
             </tr>
             <tr>
-                <th>Total Word Count</th>
+                <th>Total Word Count Submitted</th>
                 <td class="form-inline" style="width: 100%; border: none;">
                     <a class="align-middle">{{ $statistics[0]->sumWordCount ?? 0  }}</a>
                     <form action="{{ route('tasks.index') }}" method="post" class="w-50 input-group pl-3">
@@ -59,7 +59,11 @@
             </tr>
             <tr>
                 <th>Total Backup Taken</th>
-                <td>{{ $totalBackup[0]->totalBackupTaken }}</td>
+                <td>{{ $statistics[0]->totalBackupTaken ?? 0 }}</td>
+            </tr>
+            <tr>
+                <th>Total Backup Given</th>
+                <td>{{ $statistics[0]->totalBackupGiven ?? 0 }}</td>
             </tr>
             <tr>
                 <th>Total Missed Deadlines</th>
