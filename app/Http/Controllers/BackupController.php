@@ -32,8 +32,21 @@ class BackupController extends Controller
             ->get();
             // dd($tasks);
             return view('tasks.index', ['tasks' => $tasks]);
-        } else {
-            
+        } elseif($request->input('backupsGiven') !== null) {
+            $currMonth = $request->input('month');
+            $currYear = $request->input('year');
+            $backups = DB::table('backups')
+            ->join('tasks', 'backups.task_id', '=', 'tasks.id')
+            ->join('users', 'backups.user_id', '=', 'users.id')
+            ->select(
+            DB::raw('tasks.order_id, users.name, backups.*')
+            )
+            ->where('backups.user_id', Auth::user()->id)
+            ->whereRaw('MONTH(backup_given_date) = ?', [$currMonth])
+            ->whereRaw('YEAR(backup_given_date) = ?', [$currYear])
+            ->get();
+            // dd($backups);
+            return view('backups.index', ['backups' => $backups]);
         }
     }
 
