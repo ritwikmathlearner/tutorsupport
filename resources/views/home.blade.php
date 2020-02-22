@@ -53,13 +53,22 @@
                         @method('GET')
                         <input type="hidden" name="month" id="month" value="{{ $statistics[0]->date[0] }}">
                         <input type="hidden" name="year" id="year" value="{{ $statistics[0]->date[1] }}">
-                        <input type="submit" value="See all" name="seeByYearMonth" class="btn btn-link p-0 ml-2" title="shows only submitted tasks">
+                        <input type="submit" value="See all" name="allSubmittedTasks" class="btn btn-link p-0 ml-2" title="shows only submitted tasks">
                     </form>
                 </td>
             </tr>
             <tr>
                 <th>Total Backup Taken</th>
-                <td>{{ $statistics[0]->totalBackupTaken ?? 0 }}</td>
+                <td style="display: flex;">
+                    <a class="align-middle">{{ $statistics[0]->totalBackupTaken ?? 0 }}</a>
+                    <form action="{{ route('backups.index') }}" method="post" class="w-50 input-group pl-3">
+                        @csrf
+                        @method('GET')
+                        <input type="hidden" name="month" id="month" value="{{ $statistics[0]->date[0] }}">
+                        <input type="hidden" name="year" id="year" value="{{ $statistics[0]->date[1] }}">
+                        <input type="submit" value="See all" name="backupsTaken" class="btn btn-link p-0 ml-2" title="shows only submitted tasks">
+                    </form>
+                </td>
             </tr>
             <tr>
                 <th>Total Backup Given</th>

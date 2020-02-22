@@ -17,4 +17,4 @@ Auth::routes();
 
 Route::resource('tasks', 'TaskController');
 Route::resource('tags', 'TagController')->only(['index', 'store', 'destroy']);
-Route::resource('backups', 'BackupController')->except('index', 'create', 'show');
+Route::resource('backups', 'BackupController')->except('create', 'show');

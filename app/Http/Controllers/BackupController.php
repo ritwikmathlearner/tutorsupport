@@ -15,9 +15,26 @@ class BackupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // dd($request->input());
+        if($request->input('backupsTaken') !== null){
+            $currMonth = $request->input('month');
+            $currYear = $request->input('year');
+            $tasks = DB::table('backups')
+            ->join('tasks', 'backups.task_id', '=', 'tasks.id')
+            ->select(
+            DB::raw('tasks.*')
+            )
+            ->where('tasks.user_id', Auth::user()->id)
+            ->whereRaw('MONTH(backup_given_date) = ?', [$currMonth])
+            ->whereRaw('YEAR(backup_given_date) = ?', [$currYear])
+            ->get();
+            // dd($tasks);
+            return view('tasks.index', ['tasks' => $tasks]);
+        } else {
+            
+        }
     }
 
     /**
