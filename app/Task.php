@@ -22,4 +22,8 @@ class Task extends Model
     public function backups(){
         return $this->hasMany('Backup');
     }
+
+    public function escalations(){
+        return $this->hasMany('Escalation');
+    }
 }
