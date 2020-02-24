@@ -21,12 +21,17 @@ class TagController extends Controller
         ->orderByDesc('dead_line')
         ->distinct()
         ->get();
-        if(count($tasks) === 1) {
-            $task = $tasks[0];
-            return redirect()->route('tasks.show', ['task' => $task->id]);
+        if(count($tasks) !== 0) {
+            if(count($tasks) === 1) {
+                $task = $tasks[0];
+                return redirect()->route('tasks.show', ['task' => $task->id]);
+            } else {
+                return view('tasks.index', ['tasks' => $tasks]);
+            }
         } else {
-            return view('tasks.index', ['tasks' => $tasks]);
+            return view('tasks.index', ['error' => 'No result found']);
         }
+        
     }
     /**
      * Store a newly created resource in storage.

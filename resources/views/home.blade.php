@@ -93,6 +93,21 @@
                 <th>Total Missed Deadlines</th>
                 <td>{{ $statistics[0]->missedDeadLine }}&nbsp;({{ ($statistics[0]->missedDeadLine/$statistics[0]->totalTaskCount)*100 }}%)</td>
             </tr>
+            <tr>
+                <th>Total Escalations</th>
+                <td style="display: flex;">
+                    <a class="align-middle">{{ $statistics[0]->totalEscalations ?? 0 }}</a>
+                    @if($statistics[0]->totalEscalations > 0)
+                    <form action="{{ route('escalations.index') }}" method="post" class="w-50 input-group pl-3">
+                        @csrf
+                        @method('GET')
+                        <input type="hidden" name="month" id="month" value="{{ $statistics[0]->date[0] }}">
+                        <input type="hidden" name="year" id="year" value="{{ $statistics[0]->date[1] }}">
+                        <input type="submit" value="See all" name="totalEscalations" class="btn btn-link p-0 ml-2" title="shows only submitted tasks">
+                    </form>
+                    @endif
+                </td>
+            </tr>
         </table>
     </div>
 @endsection

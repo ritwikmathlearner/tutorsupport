@@ -102,12 +102,15 @@ class TaskController extends Controller
         ->select('backups.*', 'users.name')
         ->where('task_id', $id)
         ->get();
-        // dd($backups);
+        $escalations = DB::table('escalations')
+        ->select('escalations.*')
+        ->where('task_id', $id)
+        ->get();
         $totalBackupTaken = $backups->sum('amount');
         $users = User::all()->except(Auth::id());
-        // dd(gettype($tags));
+        // dd(isset($escalations[0]));
         if(Auth::user()->id == $task->user_id) {
-            return view('tasks.show', ['task' => $task, 'tags'=>$tags, 'backups'=>$backups, 'tt'=>$totalBackupTaken, 'users'=>$users]);
+            return view('tasks.show', ['task' => $task, 'tags'=>$tags, 'backups'=>$backups, 'tt'=>$totalBackupTaken, 'escalations' => $escalations, 'users'=>$users]);
         } else {
             return view('tasks.show', ['error' => 'This task is not assigned to you']);
         }

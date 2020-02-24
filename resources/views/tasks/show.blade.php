@@ -183,6 +183,69 @@
                     </tr>
                 </table>
             </div>
+
+            <div>
+                <h3 class="text-primary">Escalations</h3>
+                <a href="{{ route('escalations.create', ['task_id'=>$task->id]) }}" class="btn btn-danger mb-3">Add New Escalation</a>
+                <table class="table table-bordered">
+                    @if(isset($escalations[0]))
+                        <tr>
+                            <th scope="col">Number</th>
+                            <th scope="col">Receive Date</th>
+                            <th scope="col">Student Message</th>
+                            <th scope="col">Response</th>
+                            <th scope="col">Upload Date</th>
+                            <th scope="col">Justified</th>
+                        </tr>
+                        @foreach($escalations as $escalation)
+                            <tr>
+                                <td style="display: flex; border: none">
+                                    {{ $escalation->escalation_count }}
+                                    &nbsp; 
+                                    <form action="{{ route('escalations.edit', ['escalation'=>$escalation->id]) }}" method="post">
+                                        @csrf
+                                        @method('GET')
+                                        <input type="hidden" name="task_id" id="task_id" value="{{ $task->id }}">
+                                        <button type="submit" value="edit" name="edit" style="border: none; background: transparent">
+                                            <span><i class="fas fa-edit text-warning" style="cursor: pointer"></i></span>
+                                        </button>
+                                    </form>
+                                    &nbsp;
+                                    <form action="{{ route('escalations.destroy', ['escalation'=>$escalation->id]) }}" method="post" onsubmit="return checkDeleteEscalation();">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="task_id" id="task_id" value="{{ $task->id }}">
+                                        <button type="submit" value="Delete" name="delete" style="border: none; background: transparent"></i
+                                            <span><i class="far fa-trash-alt text-danger" style="cursor: pointer"></i></span>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td style="width: 10%">{{ (\Carbon\Carbon::parse($escalation->receive_date_time)->format('l jS \\of F Y h:i:s A')) }}</td>
+                                <td style="width: 30%">{{ $escalation->student_message }}</td>
+                                <td style="width: 30%">{{ $escalation->response_message }}</td>
+                                <td style="width: 10%">{{ $escalation->escalation_upload === null ? 'Not uploaded yet' : (\Carbon\Carbon::parse($escalation->escalation_upload)->format('l jS \\of F Y h:i:s A')) }}</td>
+                                <td style="width: 10%">
+                                    @if (isset($escalation->not_justified))
+                                        {{ $escalation->not_justified !== 1 ? 'Yes' : 'No' }}
+                                    @else
+                                        Not selected
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <p class="text-success">No escalations</p>
+                    @endif
+                    {{-- @forelse($escalations as $escalation)
+                        <tr>
+                            <td></td>
+                        </tr>
+                    @empty
+                        <p class="text-success">No escalations</p>
+                    @endforelse --}}
+                </table>
+            </div>
+
             <div>
                 <h3 class="text-primary">Tags</h3>
                 @forelse ($tags as $tag)

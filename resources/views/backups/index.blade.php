@@ -2,13 +2,13 @@
 
 @section('content')
     <div class="container-md">
-        <h1 class="h1">Backups Given</h1>
+        <h1 class="h1">{{ $heading }}</h1>
         <table class="table table-bordered">
             <tr>
                 <th scope="col">Order ID</th>
                 <th scope="col">Tutor Name</th>
                 <th scope="col">Amount</th>
-                <th scope="col">Given Date</th>
+                <th scope="col">Date</th>
             </tr>
             @forelse ($backups as $backup)
             <tr class=”row”>

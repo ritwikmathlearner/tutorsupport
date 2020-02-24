@@ -14,6 +14,9 @@
             <input type="submit" value="Search" class="btn btn-primary ml-3">
             <span class="font-italic ml-3">(Search for deadline within dates)</span>
         </form>
+    @if(isset($error))
+        <p class="alert-danger container p-3">{{ $error }}</p>
+    @else
         <table class="table table-bordered">
             <tr>
                 <th scope="col">Order ID</th>
@@ -51,7 +54,7 @@
             @empty
                 <p class="alert alert-danger">Task list is empty</p>
             @endforelse
-
         </table>
+    @endif
     </div>
 @endsection

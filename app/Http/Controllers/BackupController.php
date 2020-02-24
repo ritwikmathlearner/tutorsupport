@@ -21,17 +21,19 @@ class BackupController extends Controller
         if($request->input('backupsTaken') !== null){
             $currMonth = $request->input('month');
             $currYear = $request->input('year');
-            $tasks = DB::table('backups')
+            $backups = DB::table('backups')
             ->join('tasks', 'backups.task_id', '=', 'tasks.id')
+            ->join('users', 'backups.user_id', '=', 'users.id')
             ->select(
-            DB::raw('tasks.*')
+            DB::raw('tasks.order_id, users.name, backups.*')
             )
             ->where('tasks.user_id', Auth::user()->id)
             ->whereRaw('MONTH(backup_given_date) = ?', [$currMonth])
             ->whereRaw('YEAR(backup_given_date) = ?', [$currYear])
             ->get();
             // dd($tasks);
-            return view('tasks.index', ['tasks' => $tasks]);
+            // return view('tasks.index', ['tasks' => $tasks]);
+            return view('backups.index', ['backups' => $backups, 'heading'=>'Backup Taken']);
         } elseif($request->input('backupsGiven') !== null) {
             $currMonth = $request->input('month');
             $currYear = $request->input('year');
@@ -39,14 +41,22 @@ class BackupController extends Controller
             ->join('tasks', 'backups.task_id', '=', 'tasks.id')
             ->join('users', 'backups.user_id', '=', 'users.id')
             ->select(
-            DB::raw('tasks.order_id, users.name, backups.*')
+            DB::raw('tasks.order_id, backups.*')
             )
             ->where('backups.user_id', Auth::user()->id)
             ->whereRaw('MONTH(backup_given_date) = ?', [$currMonth])
             ->whereRaw('YEAR(backup_given_date) = ?', [$currYear])
             ->get();
+            foreach($backups as $backup){
+                $result = DB::table('tasks')
+                ->join('users', 'tasks.user_id', '=', 'users.id')
+                ->select('users.name')
+                ->where('tasks.id', $backup->task_id)
+                ->get();
+                $backup->name = $result[0]->name;
+            }
             // dd($backups);
-            return view('backups.index', ['backups' => $backups]);
+            return view('backups.index', ['backups' => $backups,'heading'=>'Backup Given']);
         }
     }
 
@@ -108,7 +118,7 @@ class BackupController extends Controller
         if(!empty($task[0])){
             return view('backups.edit', ['backup' => $backup]);
         } else {
-            return view('tasks.show', ['error' => 'This backup is not associated with your assignment']);
+            return view('backups.edit', ['error' => 'This backup is not associated with your assignment']);
         }
     }
 
@@ -144,7 +154,7 @@ class BackupController extends Controller
         // dd($id);
         Backup::destroy($id);
         $task_id = $request->input('task_id');
-        $request->session()->flash('status_danger', 'Backup is deleted');
+        $request->session()->flash('status', 'Backup is deleted');
         return redirect()->route('tasks.show', ['task'=>$task_id]);
     }
 }

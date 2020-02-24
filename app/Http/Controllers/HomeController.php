@@ -81,10 +81,21 @@ class HomeController extends Controller
         ->whereRaw('YEAR(backup_given_date) = ?', [$currYear])
         ->get();
         // dd($totalBackupTaken);
+        $totalEscalations = DB::table('escalations')
+        ->join('tasks', 'escalations.task_id', '=', 'tasks.id')
+        ->select(
+            DB::raw('COUNT(escalations.id) as totalEscalations')
+        )
+        ->where('tasks.user_id', Auth::user()->id)
+        ->whereRaw('MONTH(upload_time) = ?', [$currMonth])
+        ->whereRaw('YEAR(upload_time) = ?', [$currYear])
+        ->get();
+        // dd($totalEscalations);
         $statistics[0]->missedDeadLine= $missedDeadLine;
         $statistics[0]->date= $date;
         $statistics[0]->totalBackupTaken = $totalBackupTaken[0]->totalBackupTaken;
         $statistics[0]->totalBackupGiven = $totalBackupGiven[0]->totalBackupGiven;
+        $statistics[0]->totalEscalations = $totalEscalations[0]->totalEscalations;
         return view('home', ['statistics'=>$statistics]);
         // dd($missedDeadLine);
     }
