@@ -91,7 +91,11 @@
             </tr>
             <tr>
                 <th>Total Missed Deadlines</th>
-                <td>{{ $statistics[0]->missedDeadLine }}&nbsp;({{ ($statistics[0]->missedDeadLine/$statistics[0]->totalTaskCount)*100 }}%)</td>
+                <td>{{ $statistics[0]->missedDeadLine }}&nbsp;
+                @if($statistics[0]->totalTaskCount > 0)
+                ({{ ($statistics[0]->missedDeadLine/$statistics[0]->totalTaskCount)*100 }}%)
+                @endif
+                </td>
             </tr>
             <tr>
                 <th>Total Escalations</th>
