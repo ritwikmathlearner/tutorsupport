@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Backup extends Model
 {
     protected $fillable = [
-        'user_id', 'task_id', 'amount', 'backup_given_date'
+        'user_id', 'task_id', 'amount', 'backup_given_date', 'description'
     ];
     public $timestamps = false;
 

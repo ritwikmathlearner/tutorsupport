@@ -82,8 +82,11 @@ class BackupController extends Controller
             'amount' => 'required|integer|min:100',
             'user_id' => 'required|integer',
             'task_id' => 'required|integer',
-            'backup_given_date' => 'nullable|date'
+            'backup_given_date' => 'nullable|date',
+            'description' => 'nullable|string|max:1000'
         ]);
+
+        // dd($validatedData);
         $backup = Backup::create($validatedData);
 
         $request->session()->flash('status', 'Backup added');
@@ -110,6 +113,7 @@ class BackupController extends Controller
     public function edit(Request $request, $id)
     {
         $backup = Backup::findOrFail($id);
+        // dd($backup);
         $task = DB::table('tasks')
         ->where('user_id', Auth::user()->id)
         ->where('id', $backup->task_id)
@@ -135,7 +139,8 @@ class BackupController extends Controller
             'amount' => 'required|integer|min:100',
             'user_id' => 'required|integer',
             'task_id' => 'required|integer',
-            'backup_given_date' => 'nullable|date'
+            'backup_given_date' => 'nullable|date',
+            'description' => 'nullable|string|max:1000'
         ]);
         $backup = Backup::where('id', $id)
         ->update($validatedData);

@@ -83,26 +83,26 @@
                         </td>
                         <td style="width: 40%">
                             @forelse($backups as $backup)
-                                <div class="mb-2 w-100" style="display: flex; justify-content: flex-start;">
-                                    <p>{{ $backup->amount }} words by {{ $backup->name }}</p>
-                                    &nbsp; 
+                                <div class="mb-2 w-100" style="display: grid; grid-template-columns: 1fr 1fr 7fr; justify-content: flex-start;">
+                                    <p style="grid-column: 1/-1;">{{ $backup->amount }} words by {{ $backup->name }} On {{ $backup->backup_given_date }}</p>
+                                    <p style="grid-column: 1/-1;">{{ $backup->description }}</p> 
                                     <form action="{{ route('backups.edit', ['backup'=>$backup->id]) }}" method="post" onsubmit="return checkBackupAdd();">
                                         @csrf
                                         @method('GET')
                                         <input type="hidden" name="task_id" id="task_id" value="{{ $task->id }}">
-                                        <button type="submit" value="add" name="add" style="border: none; background: transparent"></i
-                                            <span><i class="fas fa-edit text-warning" style="cursor: pointer"></i></span>
+                                        <button type="submit" value="add" name="add" style="border: none; background: transparent">
+                                            <span title="edit"><i class="fas fa-edit text-warning fa-2x" style="cursor: pointer"></i></span>
                                         </button>
                                     </form>
-                                    &nbsp;
                                     <form action="{{ route('backups.destroy', ['backup'=>$backup->id]) }}" method="post" onsubmit="return checkDeleteBackup();">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="task_id" id="task_id" value="{{ $task->id }}">
-                                        <button type="submit" value="Delete" name="delete" style="border: none; background: transparent"></i
-                                            <span><i class="far fa-trash-alt text-danger" style="cursor: pointer"></i></span>
+                                        <button type="submit" value="Delete" name="delete" style="border: none; background: transparent">
+                                            <span title="delete"><i class="far fa-trash-alt text-danger fa-2x" style="cursor: pointer"></i></span>
                                         </button>
                                     </form>
+                                    <hr class="w-100" style="grid-column: 1/-1; background: #333">
                                 </div>
                             @empty
                                 No backup taken for this task
@@ -114,21 +114,25 @@
                                     {{ $tt }}  
                                 @endif
                             </p>
-                            <form class="input-group" action="{{ route('backups.store') }}" method="post" onsubmit="return checkBackupAdd();">
+                            <form action="{{ route('backups.store') }}" method="post" onsubmit="return checkBackupAdd();">
                                 @csrf
-                                <input type="hidden" name="task_id" id="task_id" value="{{ $task->id }}">
-                                <input type="number" name="amount" class="form-control w-25" id="amount" placeholder="Word count" value="{{ old('amount') }}" required>
-                                <input type="date" name="backup_given_date" class="form-control ml-3" id="backup_given_date" value="{{ old('backup_given_date') }}">
-                                <select class="custom-select ml-3" name="user_id" id="user_id">
-                                    <option value="null" selected>Select User</option>
-                                    @foreach($users as $user)
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endforeach
-                                </select>
-                                {{-- <input type="email" name="amount" id="amount" placeholder="User email" required> --}}
-                                <button type="submit" value="add" name="add" style="border: none; background: transparent"></i
-                                    <span><i class="fas fa-plus text-primary" style="cursor: pointer"></i></span>
-                                </button>
+                                <div class="input-group">
+                                    <input type="hidden" name="task_id" id="task_id" value="{{ $task->id }}">
+                                    <input type="number" name="amount" class="form-control w-25" id="amount" placeholder="Word count" value="{{ old('amount') }}" required>
+                                    <input type="date" name="backup_given_date" class="form-control ml-3" id="backup_given_date" value="{{ old('backup_given_date') }}">
+                                    <select class="custom-select ml-3" name="user_id" id="user_id">
+                                        <option value="null" selected>Select User</option>
+                                        @foreach($users as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <textarea class="form-control mt-2" name="description" id="description" cols="20" rows="2"></textarea>
+                                    <button type="submit" value="add" name="add" style="border: none; background: transparent">
+                                        <span><i class="fas fa-plus text-primary" style="cursor: pointer"></i></span>
+                                    </button>
+                                </div>
                             </form>
                         </td>
                         <td style="width: 40%">
