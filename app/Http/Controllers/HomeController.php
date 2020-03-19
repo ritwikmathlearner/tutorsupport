@@ -38,17 +38,22 @@ class HomeController extends Controller
             $currYear = Carbon::now()->year;
         }
         $date = [$currMonth, $currYear];
-        $tasks = Task::all()
-        ->where('user_id', Auth::user()->id);
+        // $tasks = Task::all()
+        // ->where('user_id', Auth::user()->id);
+        $tasks = DB::table('tasks')
+        ->select('tasks.*')
+        ->where('tasks.user_id', Auth::user()->id)
+        ->whereNotNull('upload_time')
+        ->whereRaw('MONTH(upload_time) = ?', [$currMonth])
+        ->whereRaw('YEAR(upload_time) = ?', [$currYear])
+        ->get();
         $missedDeadLine = 0;
         foreach($tasks as $task) {
-            if((Carbon::parse($task->upload_time)->month == $currMonth) && (Carbon::parse($task->upload_time)->year == $currYear)){
-                if(($task->upload_time)>=($task->dead_line)){
+            if(($task->upload_time)>=($task->dead_line)){
+                $missedDeadLine++;
+            } elseif(($task->upload_time) == NULL){
+                if(Carbon::now() >= $task->dead_line){
                     $missedDeadLine++;
-                } elseif(($task->upload_time) == NULL){
-                    if(Carbon::now() >= $task->dead_line){
-                        $missedDeadLine++;
-                    }
                 }
             }
         }
@@ -87,8 +92,8 @@ class HomeController extends Controller
             DB::raw('COUNT(escalations.id) as totalEscalations')
         )
         ->where('tasks.user_id', Auth::user()->id)
-        ->whereRaw('MONTH(upload_time) = ?', [$currMonth])
-        ->whereRaw('YEAR(upload_time) = ?', [$currYear])
+        ->whereRaw('MONTH(receive_date_time) = ?', [$currMonth])
+        ->whereRaw('YEAR(receive_date_time) = ?', [$currYear])
         ->get();
         // dd($totalEscalations);
         $statistics[0]->missedDeadLine= $missedDeadLine;

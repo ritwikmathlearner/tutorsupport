@@ -28,8 +28,8 @@ class EscalationController extends Controller
             DB::raw('escalations.*, tasks.order_id')
         )
         ->where('tasks.user_id', Auth::user()->id)
-        ->whereRaw('MONTH(upload_time) = ?', [$currMonth])
-        ->whereRaw('YEAR(upload_time) = ?', [$currYear])
+        ->whereRaw('MONTH(receive_date_time) = ?', [$currMonth])
+        ->whereRaw('YEAR(receive_date_time) = ?', [$currYear])
         ->get();
         return view('escalations.index', ['escalations' => $escalations]);
         // dd($escalations);
